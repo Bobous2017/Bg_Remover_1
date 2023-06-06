@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Bg_Remover_Suite</title>
+</head>
+
+<style>
+  body {
+    margin: 0;
+    background-color: rgb(33, 80, 80);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .button-container  {
+    display: flex;
+    flex-direction: column;
+    margin: 1px;
+    margin-top: 25px;
+    align-items: center;
+    overflow-y: auto; /* Enable vertical scrollbar when content overflows */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    max-height: 350px; /* Set the maximum height for the container */
+    
+  }
+
+
+  .slider-container {
+    display: flex;
+    align-items: center;
+    
+    
+  }
+
+  .slider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    /* border: 2px solid rgb(131, 131, 131);  */
+    border-radius: 12px;
+    margin-top: 20px;
+   
+    
+  }
+
+  .slider-label {
+    width: 50px;
+    margin: 5px;
+    text-align: center;
+    padding-left: 6px;
+    padding-right: 6px;
+     
+    
+    border-radius: 8px;
+    
+  }
+
+  .slider .slider-input {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #000000;
+    outline: #ffffff;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    
+  }
+
+  .slider .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    cursor: pointer;
+    padding-top: -50px;
+    
+  }
+
+  .slider .slider-input::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #ff0000;
+    cursor: pointer;
+    
+  }
+
+
+  ::-webkit-scrollbar{
+    width: 10px;
+  }
+
+
+  ::-webkit-scrollbar-track{
+    background-color:rgb(33, 80, 80);
+    
+    
+  }
+
+  ::-webkit-scrollbar-thumb{
+    background : linear-gradient( rgb(255, 255, 255),  rgb(40, 102, 102));
+    border-radius: 10px;
+    height: 12px;
+    
+  }
+</style>
+
+<body>
+  
+  <div class="slider">
+    
+    <!-- <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Sketch_B</button>
+    <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Sketch_C</button>
+    <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Sketch_D</button>
+    <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Sketch_E</button> -->
+  </div>
+  
+  <div>
+    <div id="dropArea" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+      <h1 style="color: rgb(255, 255, 255); text-align: center;">Background Remover</h1>
+      
+      <p style="color: yellow; ">
+        <span style="padding-right: 10px;"><button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 0px; " onclick="openFilePicker()">Open</button></span>
+          Drop your image to me        
+         <span style="color: rgb(160, 69, 69);"><small>Not in text erea.</span></small>
+         <span style="padding-left: 44px;"><button style="background-color: rgb(0, 124, 124); color: rgb(255, 252, 252); border: 1px solid rgb(255, 255, 255); border-radius: 8px; " onclick="removeBg()">Start</button></span></p>
+      <input type="file" id="imageInput" accept="image/*" multiple style="display: none;">
+    </div>
+    <textarea name="" id="urls" cols="50" rows="18"></textarea>
+  </div>
+  <div>
+    <div class="slider">
+      <div class="button-container">
+        <p class="slider-label" style="background-color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px; color: rgb(0, 0, 0);">White</p>
+        <input type="range" class="slider-input" id="colorSliderWhite" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 25, 25); color: white; border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Red</p>
+        <input type="range" class="slider-input" id="colorSliderRed" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(72, 255, 88); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Green</p>
+        <input type="range" class="slider-input" id="colorSliderGreen" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(68, 133, 255); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Blue</p>
+        <input type="range" class="slider-input" id="colorSliderBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(244, 255, 97); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Yellow</p>
+        <input type="range" class="slider-input" id="colorSliderYellow" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: black; color: white; border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Black</p>
+        <input type="range" class="slider-input" id="colorSliderBlack" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(75, 75, 75); color: white; border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Gray</p>
+        <input type="range" class="slider-input" id="colorSliderGray" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: aquamarine; color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Aqu.M</p>
+        <input type="range" class="slider-input" id="colorSliderAquamarine" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: pink; color: white; border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Pink</p>
+        <input type="range" class="slider-input" id="colorSliderPink" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: gold; color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Gold</p>
+        <input type="range" class="slider-input" id="colorSliderGold" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: goldenrod; color: white; border: 2px solid rgb(0, 124, 124); border-radius: 8px;">G.rod</p>
+        <input type="range" class="slider-input" id="colorSliderGoldenrod" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: lightcoral; color: white; border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Light.R</p>
+        <input type="range" class="slider-input" id="colorSliderLightRed" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: turquoise; color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">turquoi.</p>
+        <input type="range" class="slider-input" id="colorSliderTurquoise" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(107, 142, 35); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">O.Drab</p>
+        <input type="range" class="slider-input" id="colorSliderOliveDrab" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(218, 112, 214); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Orchid</p>
+        <input type="range" class="slider-input" id="colorSliderOrchid" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(165, 42, 42); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Brown</p>
+        <input type="range" class="slider-input" id="colorSliderBrown" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 165, 0); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Orange</p>
+        <input type="range" class="slider-input" id="colorSliderOrange" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(128, 0, 128); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Purple</p>
+        <input type="range" class="slider-input" id="colorSliderPurple" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(173, 216, 230); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">L.Blue</p>
+        <input type="range" class="slider-input" id="colorSliderLightBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(244, 164, 96); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">S.Brown</p>
+        <input type="range" class="slider-input" id="colorSliderSandyBrown" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 255, 127); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">S.Green</p>
+        <input type="range" class="slider-input" id="colorSliderSpringGreen" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(128, 0, 0); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Maroon</p>
+        <input type="range" class="slider-input" id="colorSliderMaroon" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 255, 255); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Cyan</p>
+        <input type="range" class="slider-input" id="colorSliderCyan" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(224, 255, 255); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">L.Cyan</p>
+        <input type="range" class="slider-input" id="colorSliderLightCyan" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(210, 105, 30); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">C.late</p>
+        <input type="range" class="slider-input" id="colorSliderChocolate" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(250, 128, 114); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Salmon</p>
+        <input type="range" class="slider-input" id="colorSliderSalmon" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 255, 240); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Ivory</p>
+        <input type="range" class="slider-input" id="colorSliderIvory" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(139, 0, 0); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.Red</p>
+        <input type="range" class="slider-input" id="colorSliderDarkRed" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 0, 139); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.Blue</p>
+        <input type="range" class="slider-input" id="colorSliderDarkBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(192, 192, 192); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Silver</p>
+        <input type="range" class="slider-input" id="colorSliderSilver" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 100, 0); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.Green</p>
+        <input type="range" class="slider-input" id="colorSliderDarkGreen" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(208, 32, 144); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">V.Red</p>
+        <input type="range" class="slider-input" id="colorSliderVioletRed" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(245, 222, 179); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Wheat</p>
+        <input type="range" class="slider-input" id="colorSliderWheat" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 0, 128); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Navy</p>
+        <input type="range" class="slider-input" id="colorSliderNavy" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 128, 128); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Teal</p>
+        <input type="range" class="slider-input" id="colorSliderTeal" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 255, 0); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Lime</p>
+        <input type="range" class="slider-input" id="colorSliderLime" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 0, 255); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Magenta</p>
+        <input type="range" class="slider-input" id="colorSliderMagenta" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(169, 169, 169); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.Gray</p>
+        <input type="range" class="slider-input" id="colorSliderDarkGray" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(211, 211, 211); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">L.Gray</p>
+        <input type="range" class="slider-input" id="colorSliderLightGray" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(85, 107, 47); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.O.Grn</p>
+        <input type="range" class="slider-input" id="colorSliderDarkOliveGreen" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(46, 139, 87); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Sea.G</p>
+        <input type="range" class="slider-input" id="colorSliderSeaGreen" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(135, 206, 235); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Sky.B</p>
+        <input type="range" class="slider-input" id="colorSliderSkyBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(135, 206, 250); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">L.Sky.B</p>
+        <input type="range" class="slider-input" id="colorSliderLightSkyBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 191, 255); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">De..S.B</p>
+        <input type="range" class="slider-input" id="colorSliderDeepSkyBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(30, 144, 255); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.er.B</p>
+        <input type="range" class="slider-input" id="colorSliderDodgerBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(65, 105, 225); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Royal.B</p>
+        <input type="range" class="slider-input" id="colorSliderRoyalBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(100, 149, 237); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">C.flr.B</p>
+        <input type="range" class="slider-input" id="colorSliderCornflowerBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(70, 130, 180); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Steel.B</p>
+        <input type="range" class="slider-input" id="colorSliderSteelBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(123, 104, 238); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">M.S.B</p>
+        <input type="range" class="slider-input" id="colorSliderMediumSlateBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(106, 90, 205); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Slate.B</p>
+        <input type="range" class="slider-input" id="colorSliderSlateBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(72, 61, 139); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.Sl.B</p>
+        <input type="range" class="slider-input" id="colorSliderDarkSlateBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(25, 25, 112); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Mn.B</p>
+        <input type="range" class="slider-input" id="colorSliderMidnightBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(240, 248, 255); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Alice.B</p>
+        <input type="range" class="slider-input" id="colorSliderAliceBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(250, 235, 215); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Atq.W</p>
+        <input type="range" class="slider-input" id="colorSliderAntiqueWhite" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 255, 255); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Aqua</p>
+        <input type="range" class="slider-input" id="colorSliderAqua" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(240, 255, 255); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Azure</p>
+        <input type="range" class="slider-input" id="colorSliderAzure" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(245, 245, 220); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Beige</p>
+        <input type="range" class="slider-input" id="colorSliderBeige" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 228, 196); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Bisque</p>
+        <input type="range" class="slider-input" id="colorSliderBisque" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 235, 205); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">B.Alm</p>
+        <input type="range" class="slider-input" id="colorSliderBlanchedAlmond" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(138, 43, 226); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">B.Violet</p>
+        <input type="range" class="slider-input" id="colorSliderBlueViolet" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(222, 184, 135); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Burly.W</p>
+        <input type="range" class="slider-input" id="colorSliderBurlyWood" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(95, 158, 160); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Cadet.B</p>
+        <input type="range" class="slider-input" id="colorSliderCadetBlue" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(127, 255, 0); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Ch*use</p>
+        <input type="range" class="slider-input" id="colorSliderChartreuse" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 127, 80); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Coral</p>
+        <input type="range" class="slider-input" id="colorSliderCoral" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(255, 248, 220); color: rgb(0, 0, 0); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Cornsilk</p>
+        <input type="range" class="slider-input" id="colorSliderCornsilk" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(220, 20, 60); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">Crimson</p>
+        <input type="range" class="slider-input" id="colorSliderCrimson" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(0, 139, 139); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.Cyan</p>
+        <input type="range" class="slider-input" id="colorSliderDarkCyan" min="0" max="10" value="10" step="1">
+        <p class="slider-label" style="background-color: rgb(184, 134, 11); color: rgb(255, 255, 255); border: 2px solid rgb(0, 124, 124); border-radius: 8px;">D.G.rod</p>
+        <input type="range" class="slider-input" id="colorSliderDarkGoldenrod" min="0" max="10" value="10" step="1">
+        <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Skecth_W</button>
+        <input type="range" class="slider-input" id="Sketch_A" min="0" max="10" value="10" step="1">
+        <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Sketch_I</button>
+        <input type="range" class="slider-input" id="Inverse_A" min="0" max="10" value="10" step="1">
+        <!-- <button style="background-color: rgb(40, 102, 102); color: white; border: 1px solid rgb(255, 255, 255); border-radius: 8px; margin: 12px;">Sketch_B</button>
+        <input type="range" class="slider-input" id="BlueShades_A" min="0" max="10" value="10" step="1"> -->
+
+       
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsfeat/0.0.8/jsfeat-min.js"></script>
+<script>
+
+  // OPEN FILES ---------------------------------------------------------------------------------------------------------- OPEN FILES (1)
+  function openFilePicker() {
+    const imageInput = document.getElementById('imageInput');
+    imageInput.click();
+  }
+
+  // HANDLE IMAGE UPLOAD ---------------------------------------------------------------------------------------------------------- HANDLE IMAGE UPLOAD (2)
+  function handleImageUpload(event) {
+    const files = event.target.files;
+    const urlsTextarea = document.getElementById('urls');
+    const imageContainer = document.getElementById('imageContainer'); // Container element for the image
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        urlsTextarea.value += event.target.result + '\n';
+
+        // Create an img element and set its src attribute to the data URL
+        const img = document.createElement('img');
+        img.src = event.target.result;
+
+        // Set the CSS width and height properties of the img element
+        img.style.width = '300px';
+        img.style.height = '300px';
+
+        // Append the img element to the container
+        imageContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // ALGORITHMS ---------------------------------------------------------------------------------------------------------- BG_Algorithm Remover (3)
+  function removeBg() {
+    var images = document.getElementById('urls').value.split('\n');
+    console.log(images);
+    images.forEach((imageUrl) => {
+      const image = new Image();
+
+      image.onload = ({ target }) => {
+        const w = Math.round(target.width);
+        const h = Math.round(target.height);
+
+        const desiredWidth = 400;
+        const desiredHeight = 400;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = desiredWidth;
+        canvas.height = desiredHeight;
+
+        const canvasContext = canvas.getContext('2d');
+
+        // Draw the original image
+        canvasContext.drawImage(
+          target,
+          0,
+          0,
+          target.width,
+          target.height,
+          0,
+          0,
+          desiredWidth,
+          desiredHeight
+        );
+
+        const canvasImageData = canvasContext.getImageData(0, 0, desiredWidth, desiredHeight);
+        
+        // ALgorithm Colors Slider---------------------------------------------------------------------------------------------------------4)
+        const sliders = [
+          { id: "colorSliderWhite", targetColor: [255, 255, 255], distanceThreshold: 200 },
+          { id: "colorSliderRed", targetColor: [255, 0, 0], distanceThreshold: 200 },
+          { id: "colorSliderGreen", targetColor: [0, 128, 0], distanceThreshold: 200 },
+          { id: "colorSliderBlue", targetColor: [0, 0, 255], distanceThreshold: 200 },
+          { id: "colorSliderYellow", targetColor: [255, 255, 0], distanceThreshold: 200 },
+          { id: "colorSliderBlack", targetColor: [0, 0, 0], distanceThreshold: 200 },
+          { id: "colorSliderGray", targetColor: [128, 128, 128], distanceThreshold: 100 },
+          { id: "colorSliderAquamarine", targetColor: [127, 255, 212], distanceThreshold: 200 },
+          { id: "colorSliderPink", targetColor: [255, 192, 203], distanceThreshold: 200 },
+          { id: "colorSliderGold", targetColor: [255, 215, 0], distanceThreshold: 200 },
+          { id: "colorSliderGoldenrod", targetColor: [255, 215, 0], distanceThreshold: 200 },
+          { id: "colorSliderLightRed", targetColor: [255, 102, 102], distanceThreshold: 200 },
+          { id: "colorSliderTurquoise", targetColor: [64, 224, 208], distanceThreshold: 200 },
+          { id: "colorSliderOliveDrab", targetColor: [107, 142, 35], distanceThreshold: 200 },
+          { id: "colorSliderOrchid", targetColor: [218, 112, 214], distanceThreshold: 200 },
+          { id: "colorSliderBrown", targetColor: [165, 42, 42], distanceThreshold: 200 },
+          { id: "colorSliderOrange", targetColor: [255, 165, 0], distanceThreshold: 200 },
+          { id: "colorSliderPurple", targetColor: [128, 0, 128], distanceThreshold: 200 },
+          { id: "colorSliderLightBlue", targetColor: [173, 216, 230], distanceThreshold: 200 },
+          { id: "colorSliderSandyBrown", targetColor: [244, 164, 96], distanceThreshold: 200 },
+          { id: "colorSliderSpringGreen", targetColor: [0, 255, 127], distanceThreshold: 200 },
+          { id: "colorSliderMaroon", targetColor: [128, 0, 0], distanceThreshold: 200 },
+          { id: "colorSliderCyan", targetColor: [0, 255, 255], distanceThreshold: 200 },
+          { id: "colorSliderLightCyan", targetColor: [224, 255, 255], distanceThreshold: 200 },
+          { id: "colorSliderChocolate", targetColor: [210, 105, 30], distanceThreshold: 200 },
+          { id: "colorSliderSalmon", targetColor: [250, 128, 114], distanceThreshold: 200 },
+          { id: "colorSliderIvory", targetColor: [255, 255, 240], distanceThreshold: 200 },
+          { id: "colorSliderDarkRed", targetColor: [139, 0, 0], distanceThreshold: 200 },
+          { id: "colorSliderDarkBlue", targetColor: [0, 0, 139], distanceThreshold: 200 },
+          { id: "colorSliderSilver", targetColor: [192, 192, 192], distanceThreshold: 200 },
+          { id: "colorSliderDarkGreen", targetColor: [0, 100, 0], distanceThreshold: 200 },
+          { id: "colorSliderVioletRed", targetColor: [208, 32, 144], distanceThreshold: 200 },
+          { id: "colorSliderWheat", targetColor: [245, 222, 179], distanceThreshold: 200 },
+          { id: "colorSliderNavy", targetColor: [0, 0, 128], distanceThreshold: 200 },
+          { id: "colorSliderTeal", targetColor: [0, 128, 128], distanceThreshold: 200 },
+          { id: "colorSliderLime", targetColor: [0, 255, 0], distanceThreshold: 200 },
+          { id: "colorSliderMagenta", targetColor: [255, 0, 255], distanceThreshold: 200 },
+          { id: "colorSliderDarkGray", targetColor: [169, 169, 169], distanceThreshold: 200 },
+          { id: "colorSliderLightGray", targetColor: [211, 211, 211], distanceThreshold: 200 },
+          { id: "colorSliderDarkOliveGreen", targetColor: [85, 107, 47], distanceThreshold: 200 },
+          { id: "colorSliderSeaGreen", targetColor: [46, 139, 87], distanceThreshold: 200 },
+          { id: "colorSliderSkyBlue", targetColor: [135, 206, 235], distanceThreshold: 200 },
+          { id: "colorSliderLightSkyBlue", targetColor: [135, 206, 250], distanceThreshold: 200 },
+          { id: "colorSliderDeepSkyBlue", targetColor: [0, 191, 255], distanceThreshold: 200 },
+          { id: "colorSliderDodgerBlue", targetColor: [30, 144, 255], distanceThreshold: 200 },
+          { id: "colorSliderRoyalBlue", targetColor: [65, 105, 225], distanceThreshold: 200 },
+          { id: "colorSliderCornflowerBlue", targetColor: [100, 149, 237], distanceThreshold: 200 },
+          { id: "colorSliderSteelBlue", targetColor: [70, 130, 180], distanceThreshold: 200 },
+          { id: "colorSliderMediumSlateBlue", targetColor: [123, 104, 238], distanceThreshold: 200 },
+          { id: "colorSliderSlateBlue", targetColor: [106, 90, 205], distanceThreshold: 200 },
+          { id: "colorSliderDarkSlateBlue", targetColor: [72, 61, 139], distanceThreshold: 200 },
+          { id: "colorSliderMidnightBlue", targetColor: [25, 25, 112], distanceThreshold: 200 },
+          { id: "colorSliderAliceBlue", targetColor: [240, 248, 255], distanceThreshold: 200 },
+          { id: "colorSliderAntiqueWhite", targetColor: [250, 235, 215], distanceThreshold: 200 },
+          { id: "colorSliderAqua", targetColor: [0, 255, 255], distanceThreshold: 200 },
+          { id: "colorSliderAzure", targetColor: [240, 255, 255], distanceThreshold: 200 },
+          { id: "colorSliderBeige", targetColor: [245, 245, 220], distanceThreshold: 200 },
+          { id: "colorSliderBisque", targetColor: [255, 228, 196], distanceThreshold: 200 },
+          { id: "colorSliderBlanchedAlmond", targetColor: [255, 235, 205], distanceThreshold: 200 },
+          { id: "colorSliderBlueViolet", targetColor: [138, 43, 226], distanceThreshold: 200 },
+          { id: "colorSliderBurlyWood", targetColor: [222, 184, 135], distanceThreshold: 200 },
+          { id: "colorSliderCadetBlue", targetColor: [95, 158, 160], distanceThreshold: 200 },
+          { id: "colorSliderChartreuse", targetColor: [127, 255, 0], distanceThreshold: 200 },
+          { id: "colorSliderCoral", targetColor: [255, 127, 80], distanceThreshold: 200 },
+          { id: "colorSliderCornsilk", targetColor: [255, 248, 220], distanceThreshold: 200 },
+          { id: "colorSliderCrimson", targetColor: [220, 20, 60], distanceThreshold: 200 },
+          { id: "colorSliderDarkCyan", targetColor: [0, 139, 139], distanceThreshold: 200 },
+          { id: "colorSliderDarkGoldenrod", targetColor: [184, 134, 11], distanceThreshold: 200 },
+
+        ];
+
+        sliders.forEach(slider => {
+          const colorSlider = document.getElementById(slider.id);
+          colorSlider.addEventListener("input", function () {
+            const intensity = parseInt(colorSlider.value);
+            const alpha = intensity * 25; // Calculate the alpha value based on the intensity
+
+            for (let i = 0, dataLength = canvasImageData.data.length; i < dataLength; i += 4) {
+              const r = canvasImageData.data[i];
+              const g = canvasImageData.data[i + 1];
+              const b = canvasImageData.data[i + 2];
+
+              // Calculate the Euclidean distance between the pixel color and the target color
+              const distance = Math.sqrt(
+                Math.pow(r - slider.targetColor[0], 2) +
+                Math.pow(g - slider.targetColor[1], 2) +
+                Math.pow(b - slider.targetColor[2], 2)
+              );
+
+              // Set the alpha value if the distance is below a certain threshold
+              if (distance < slider.distanceThreshold) {
+                canvasImageData.data[i + 3] = alpha;
+              }
+            }
+            canvasContext.putImageData(canvasImageData, 0, 0);
+            
+          });
+        });
+
+
+        //Create Sketch Grayscale---------------------------------------------------------------------------------------------------------5)
+        const colorSliderGraySke_A = document.getElementById("Sketch_A");
+        colorSliderGraySke_A.addEventListener("input", function () {
+          
+          const intensity = parseInt(colorSliderGraySke_A.value);
+          const alpha = intensity * 25; // Calculate the alpha value based on the intensity
+
+          const grayscaleImage = new jsfeat.matrix_t(desiredWidth, desiredHeight, jsfeat.U8C1_t);
+          jsfeat.imgproc.grayscale(canvasImageData.data, desiredWidth, desiredHeight, grayscaleImage);
+
+          const threshold = 127; // Adjust this threshold to control the conversion
+          const thresholdAlpha = (255 - alpha) / 255; // Calculate the alpha value for the thresholded pixels
+
+          for (let i = 0, dataLength = canvasImageData.data.length; i < dataLength; i += 4) {
+            const r = canvasImageData.data[i];
+            const g = canvasImageData.data[i + 1];
+            const b = canvasImageData.data[i + 2];
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b); // Calculate the luminance value
+
+            if (luminance > threshold) {
+              // Set the pixel to white
+              canvasImageData.data[i] = 255;
+              canvasImageData.data[i + 1] = 255;
+              canvasImageData.data[i + 2] = 255;
+              canvasImageData.data[i + 3] = alpha;
+            } else {
+              // Set the pixel to black
+              canvasImageData.data[i] = 0;
+              canvasImageData.data[i + 1] = 0;
+              canvasImageData.data[i + 2] = 0;
+              canvasImageData.data[i + 3] = thresholdAlpha;
+            }
+          }
+          canvasContext.putImageData(canvasImageData, 0, 0);
+        });
+
+
+         //Create Sketch Grayscale---Inversion------------------------------------------------------------------------------------------------5)
+        const colorSliderInverse_A = document.getElementById("Inverse_A");
+        colorSliderInverse_A.addEventListener("input", function () {
+          const intensity = parseInt(colorSliderInverse_A.value);
+          const alpha = intensity * 25; // Calculate the alpha value based on the intensity
+
+          const threshold = 127; // Adjust this threshold to control the conversion
+          const thresholdAlpha = (255 - alpha) / 255; // Calculate the alpha value for the thresholded pixels
+
+          for (let i = 0, dataLength = canvasImageData.data.length; i < dataLength; i += 4) {
+            const r = 255 - canvasImageData.data[i]; // Invert the red channel
+            const g = 255 - canvasImageData.data[i + 1]; // Invert the green channel
+            const b = 255 - canvasImageData.data[i + 2]; // Invert the blue channel
+
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b); // Calculate the luminance value
+
+            if (luminance > threshold) {
+              // Set the pixel to white
+              canvasImageData.data[i] = 255;
+              canvasImageData.data[i + 1] = 255;
+              canvasImageData.data[i + 2] = 255;
+              canvasImageData.data[i + 3] = alpha;
+            } else {
+              // Set the pixel to black
+              canvasImageData.data[i] = 0;
+              canvasImageData.data[i + 1] = 0;
+              canvasImageData.data[i + 2] = 0;
+              canvasImageData.data[i + 3] = thresholdAlpha;
+            }
+          }
+          canvasContext.putImageData(canvasImageData, 0, 0);
+          
+        });
+
+        // Add text on top of the processed image
+        canvasContext.font = '20px Arial';
+        canvasContext.fillStyle = 'white';
+        canvasContext.fillText('A Copy for process', 20, 30);
+        document.body.appendChild(canvas);
+
+        // Size for output
+        target.width = 200;
+        target.height = 215;
+        
+        document.body.append(image, canvas);
+        
+      };
+
+      image.crossOrigin = "";
+      image.src = imageUrl;
+    });
+  }
+    
+  const imageInput = document.getElementById('imageInput');
+  imageInput.addEventListener('change', handleImageUpload);
+
+  // DRAG N DROP ----------------------------------------------------------------------------------------------------------  DRAG N DROP (4)
+  function handleDrop(event) {
+    event.preventDefault();
+
+    const files = event.dataTransfer.files;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const urlsTextarea = document.getElementById('urls');
+        urlsTextarea.value += event.target.result + '\n';
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Prevent default behavior when dropping an image
+  window.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    e.stopPropagation(); // Add this line to prevent further propagation of the event
+  });
+
+</script>
+
+
+</html>
